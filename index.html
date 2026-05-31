@@ -35,13 +35,16 @@
             color: #ffffff;
         }
 
-        /* Top Action Bar */
+        /* Top Action Bar (Spaced to hold Back on left, Skip on right) */
         .top-bar {
             display: flex;
-            justify-content: flex-end;
-            height: 20px;
+            justify-content: space-between;
+            align-items: center;
+            height: 32px;
         }
-        .skip-btn {
+
+        /* Nav Buttons (Shared styling for Back & Skip) */
+        .nav-btn {
             background: rgba(255, 255, 255, 0.15);
             border: none;
             color: #e0e7ff;
@@ -52,8 +55,15 @@
             border-radius: 20px;
             transition: all 0.2s;
         }
-        .skip-btn:hover {
+        .nav-btn:hover {
             background: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* Unique Back Arrow Font Size override */
+        .back-btn {
+            font-size: 16px;
+            padding: 4px 14px 6px 14px; /* Slight alignment tweak for arrow */
+            visibility: hidden; /* Hidden on first screen by default */
         }
 
         /* Content Slides with Smooth Transitions */
@@ -187,15 +197,13 @@
 <body>
 
     <div class="phone">
-        <!-- Skip Button -->
         <div class="top-bar">
-            <button class="skip-btn" id="skipBtn" onclick="goToStep(2)">Skip</button>
+            <button class="nav-btn back-btn" id="backBtn" onclick="prevStep()">←</button>
+            <button class="nav-btn skip-btn" id="skipBtn" onclick="goToStep(2)">Skip</button>
         </div>
 
-        <!-- Slides Container -->
         <div class="slides-container">
             
-            <!-- Step 1 -->
             <div class="slide active">
                 <div class="graphic-container">
                     <div class="glow-bg"></div>
@@ -207,7 +215,6 @@
                 <p>Sync your cards or scan receipts to capture every coffee, bill, and treat instantly.</p>
             </div>
 
-            <!-- Step 2 -->
             <div class="slide">
                 <div class="graphic-container">
                     <div class="glow-bg" style="background: #fb7185;"></div>
@@ -219,7 +226,6 @@
                 <p>Set custom category targets and goals to save money.</p>
             </div>
 
-            <!-- Step 3 -->
             <div class="slide">
                 <div class="graphic-container">
                     <div class="glow-bg" style="background: #4ade80;"></div>
@@ -233,7 +239,6 @@
             
         </div>
 
-        <!-- Footer Navigation Controls -->
         <div class="bottom-bar">
             <div class="dots">
                 <div class="dot active"></div>
@@ -244,13 +249,13 @@
         </div>
     </div>
 
-    <!-- Interface Logic -->
     <script>
         let currentStep = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
         const nextBtn = document.getElementById('nextBtn');
         const skipBtn = document.getElementById('skipBtn');
+        const backBtn = document.getElementById('backBtn');
 
         function goToStep(step) {
             slides[currentStep].classList.remove('active');
@@ -261,9 +266,19 @@
             slides[currentStep].classList.add('active');
             dots[currentStep].classList.add('active');
 
+            // --- NAVIGATION CONTROL CONTROLS ---
+
+            // Handle Back Button Visibility
+            if (currentStep === 0) {
+                backBtn.style.visibility = "hidden"; // No back path on slide 1
+            } else {
+                backBtn.style.visibility = "visible"; // Show back arrow on slides 2 and 3
+            }
+
+            // Handle Skip & Main Button Configurations on Final Screen
             if (currentStep === slides.length - 1) {
                 nextBtn.innerText = "Start Your Journey";
-                nextBtn.style.background = "#38bdf8"; // Change button to cyan on final screen
+                nextBtn.style.background = "#38bdf8"; 
                 nextBtn.style.color = "#ffffff";
                 skipBtn.style.visibility = "hidden";
             } else {
@@ -279,6 +294,13 @@
                 goToStep(currentStep + 1);
             } else {
                 alert("Welcome aboard! Let's get started!");
+            }
+        }
+
+        // Added functionality to go backwards
+        function prevStep() {
+            if (currentStep > 0) {
+                goToStep(currentStep - 1);
             }
         }
     </script>
